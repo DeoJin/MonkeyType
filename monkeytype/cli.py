@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 import argparse
 import collections
+import configparser
 import difflib
 import importlib
 import inspect
@@ -14,6 +15,11 @@ import runpy
 import sys
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, List, Optional, Tuple
+
+try:
+    from importlib.metadata import PackageNotFoundError, version
+except ImportError:
+    from importlib_metadata import PackageNotFoundError, version
 
 from libcst import Module, parse_module
 from libcst.codemod import CodemodContext
@@ -293,9 +299,25 @@ def update_args_from_config(args: argparse.Namespace) -> None:
         args.limit = args.config.query_limit()
 
 
+def get_version_string() -> str:
+    try:
+        return version("MonkeyType")
+    except PackageNotFoundError:
+        config = configparser.ConfigParser()
+        setup_cfg = Path(__file__).resolve().parent.parent / "setup.cfg"
+        if config.read(setup_cfg):
+            return config["metadata"].get("version", "unknown")
+        return "unknown"
+
+
 def main(argv: List[str], stdout: IO[str], stderr: IO[str]) -> int:
     parser = argparse.ArgumentParser(
         description="Generate and apply stub files from collected type information.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"MonkeyType {get_version_string()}",
     )
     parser.add_argument(
         "--disable-type-rewriting",

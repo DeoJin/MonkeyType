@@ -228,6 +228,25 @@ def test_display_list_of_modules_no_modules(store, db_file, stdout, stderr):
     assert ret == 0
 
 
+def test_version_option(capsys, stdout, stderr):
+    with pytest.raises(SystemExit) as excinfo:
+        cli.main(['--version'], stdout, stderr)
+    captured = capsys.readouterr()
+    assert excinfo.value.code == 0
+    assert captured.out.startswith('MonkeyType ')
+    assert captured.err == ''
+
+
+def test_version_option_falls_back_to_unknown(capsys, stdout, stderr):
+    with mock.patch.object(cli, 'get_version_string', return_value='unknown'):
+        with pytest.raises(SystemExit) as excinfo:
+            cli.main(['--version'], stdout, stderr)
+    captured = capsys.readouterr()
+    assert excinfo.value.code == 0
+    assert captured.out == 'MonkeyType unknown\n'
+    assert captured.err == ''
+
+
 def test_display_sample_count(stderr):
     traces = [
         CallTrace(func, {'a': int, 'b': str}, NoneType),
