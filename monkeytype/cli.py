@@ -23,7 +23,7 @@ from libcst.codemod.visitors import (
     ImportItem,
 )
 
-from monkeytype import trace
+from monkeytype import __version__, trace
 from monkeytype.config import Config
 from monkeytype.exceptions import MonkeyTypeError
 from monkeytype.stubs import (
@@ -296,6 +296,11 @@ def update_args_from_config(args: argparse.Namespace) -> None:
 def main(argv: List[str], stdout: IO[str], stderr: IO[str]) -> int:
     parser = argparse.ArgumentParser(
         description="Generate and apply stub files from collected type information.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
     parser.add_argument(
         "--disable-type-rewriting",

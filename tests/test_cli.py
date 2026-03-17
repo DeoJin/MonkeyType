@@ -203,6 +203,16 @@ def test_no_traces(store, db_file, stdout, stderr, arg, error):
     assert ret == 0
 
 
+def test_version_flag(capsys):
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main(['--version'], io.StringIO(), io.StringIO())
+
+    out, err = capsys.readouterr()
+    assert out.endswith(f" {cli.__version__}\n")
+    assert err == ""
+    assert exc_info.value.code == 0
+
+
 def test_display_list_of_modules(store, db_file, stdout, stderr):
     traces = [
         CallTrace(func, {'a': int, 'b': str}, NoneType),
