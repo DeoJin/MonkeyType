@@ -203,6 +203,15 @@ def test_no_traces(store, db_file, stdout, stderr, arg, error):
     assert ret == 0
 
 
+def test_version_flag(stdout, stderr):
+    with mock.patch.object(sys, 'stdout', stdout):
+        with pytest.raises(SystemExit) as excinfo:
+            cli.main(['--version'], stdout, stderr)
+    assert excinfo.value.code == 0
+    assert stdout.getvalue().startswith('MonkeyType ')
+    assert stderr.getvalue() == ''
+
+
 def test_display_list_of_modules(store, db_file, stdout, stderr):
     traces = [
         CallTrace(func, {'a': int, 'b': str}, NoneType),

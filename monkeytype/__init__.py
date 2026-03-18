@@ -3,10 +3,16 @@
 #
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
+from importlib.metadata import PackageNotFoundError, version
 from typing import ContextManager, Optional
 
 from monkeytype.config import Config, get_default_config
 from monkeytype.tracing import trace_calls
+
+try:
+    __version__ = version("MonkeyType")
+except PackageNotFoundError:
+    __version__ = "0+unknown"
 
 
 def trace(config: Optional[Config] = None) -> ContextManager[None]:
