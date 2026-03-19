@@ -4,6 +4,8 @@ Changelog
 main
 ----
 
+* Add a ``--version`` flag to the CLI. Thanks DeoJin. Fixes #354.
+
 * Add ``RewriteMostSpecificCommonBase`` type rewriter to replace union of derived classes with common
   base class (not enabled by default.) Merge of #311, fixes #298. Thanks Christoph Hansknecht.
 

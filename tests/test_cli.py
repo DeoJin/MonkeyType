@@ -290,6 +290,15 @@ def test_cli_context_manager_activated(capsys, stdout, stderr):
     assert ret == 0
 
 
+def test_version_flag(capsys, stdout, stderr):
+    with pytest.raises(SystemExit) as excinfo:
+        cli.main(['--version'], stdout, stderr)
+    out, err = capsys.readouterr()
+    assert excinfo.value.code == 0
+    assert cli.get_version() in out
+    assert err == ''
+
+
 def test_pathlike_parameter(store, db_file, capsys, stdout, stderr):
     with mock.patch.dict(os.environ, {DefaultConfig.DB_PATH_VAR: db_file.name}):
         with pytest.raises(SystemExit):
